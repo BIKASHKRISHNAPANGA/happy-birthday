@@ -27,39 +27,41 @@ class Paper {
       endEvent = 'touchend';
     }
 
-    document.addEventListener(moveEvent, (e) => {
-      if (!this.rotating) {
-        this.mouseX = e.clientX || e.touches[0].clientX;
-        this.mouseY = e.clientY || e.touches[0].clientY;
+   document.addEventListener(moveEvent, (e) => {
+  if (!this.rotating) {
+    this.mouseX = e.clientX || e.touches[0].clientX;
+    this.mouseY = e.clientY || e.touches[0].clientY;
 
-        this.velX = this.mouseX - this.prevMouseX;
-        this.velY = this.mouseY - this.prevMouseY;
-      }
+    this.velX = this.mouseX - this.prevMouseX;
+    this.velY = this.mouseY - this.prevMouseY;
+  }
 
-      const dirX = (e.clientX || e.touches[0].clientX) - this.mouseTouchX;
-      const dirY = (e.clientY || e.touches[0].clientY) - this.mouseTouchY;
-      const dirLength = Math.sqrt(dirX * dirX + dirY * dirY);
-      const dirNormalizedX = dirX / dirLength;
-      const dirNormalizedY = dirY / dirLength;
+  const touch = e.touches ? e.touches[0] : null;
+  const dirX = (touch ? touch.clientX : e.clientX) - this.mouseTouchX;
+  const dirY = (touch ? touch.clientY : e.clientY) - this.mouseTouchY;
+  const dirLength = Math.sqrt(dirX * dirX + dirY * dirY);
+  const dirNormalizedX = dirX / dirLength;
+  const dirNormalizedY = dirY / dirLength;
 
-      const angle = Math.atan2(dirNormalizedY, dirNormalizedX);
-      let degrees = (180 * angle) / Math.PI;
-      degrees = (360 + Math.round(degrees)) % 360;
-      if (this.rotating) {
-        this.rotation = degrees;
-      }
+  const angle = Math.atan2(dirNormalizedY, dirNormalizedX);
+  let degrees = (180 * angle) / Math.PI;
+  degrees = (360 + Math.round(degrees)) % 360;
+  if (this.rotating) {
+    this.rotation = degrees;
+  }
 
-      if (this.holdingPaper) {
-        if (!this.rotating) {
-          this.currentPaperX += this.velX;
-          this.currentPaperY += this.velY;
-        }
-        this.prevMouseX = this.mouseX;
-        this.prevMouseY = this.mouseY;
+  if (this.holdingPaper) {
+    if (!this.rotating) {
+      this.currentPaperX += this.velX;
+      this.currentPaperY += this.velY;
+    }
+    this.prevMouseX = this.mouseX;
+    this.prevMouseY = this.mouseY;
 
-        paper.style.transform = `translateX(${this.currentPaperX}px) translateY(${this.currentPaperY}px) rotateZ(${this.rotation}deg)`;
-      }
-    });
+    paper.style.transform = `translateX(${this.currentPaperX}px) translateY(${this.currentPaperY}px) rotateZ(${this.rotation}deg)`;
+  }
+});
+
 
     paper.addEventListener(startEvent, (e) => {
       if (this.holdingPaper) return;
